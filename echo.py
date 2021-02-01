@@ -40,8 +40,8 @@ WHEN_TRANSLATER = {
 }
 
 
-def currencies():
-    headers = {"Accepts": "application/json", "X-CMC_PRO_API_KEY": os.getenv("key", "")}
+def currencies(key: str):
+    headers = {"Accepts": "application/json", "X-CMC_PRO_API_KEY": key}
     session = requests.Session()
     session.headers.update(headers)
 
@@ -49,7 +49,10 @@ def currencies():
     try:
         response = session.get(url)
         j = response.json()
-        return j.get("data", {})
+        if "data" not in j:
+            logging.error("Couldn't fetch currency listings.")
+            return {}
+        return j["data"]
     except (ConnectionError, Timeout, TooManyRedirects) as e:
         logging.error("Couldn't fetch currency listings: %s.", e)
         return {}
@@ -83,7 +86,7 @@ def main():
         logging.error("Invalid syntax in stdin: %s", e)
         return 1
 
-    listings = currencies()
+    listings = currencies(key)
     if not listings:
         return 2
 
