@@ -1,3 +1,5 @@
+// This is an example of script input.
+
 [
 	// Use symbols from coinmarketcap.com.
 
@@ -6,8 +8,16 @@
 		when: >2000
 	}
 	{
+		symbol: ETH
+		when: <100
+	}
+	{
 		symbol: BTC
-		when: >35000
+		when: >15000
+	}
+	{
+		symbol: ZEC
+		when: >60
 	}
 
 	// I don't believe in USDT.
