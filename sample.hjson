@@ -1,0 +1,22 @@
+[
+	// Use symbols from coinmarketcap.com.
+
+	{
+		symbol: ETH
+		when: >2000
+	}
+	{
+		symbol: BTC
+		when: >35000
+	}
+
+	// I don't believe in USDT.
+	{
+		symbol: USDT
+		when: <0.9
+	}
+	{
+		symbol: USDT
+		when: >1.1
+	}
+]
