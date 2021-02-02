@@ -15,7 +15,6 @@
 # limitations under the License.
 
 import logging
-import os
 import sys
 
 import hjson
@@ -50,7 +49,9 @@ def currencies(key: str):
         response = session.get(url)
         j = response.json()
         if "data" not in j:
-            logging.error("Couldn't fetch currency listings.")
+            logging.error(
+                'Couldn\'t fetch currency listings. Possibly "key" is invalid.'
+            )
             return {}
         return j["data"]
     except (ConnectionError, Timeout, TooManyRedirects) as e:
@@ -75,21 +76,22 @@ def cmp_function(s: str):
 
 
 def main():
-    key = os.getenv("key", None)
-    if not key:
-        logging.error("No key available. Set `key` environment variable.")
-        return 1
-
     try:
-        watching = hjson.load(sys.stdin)
+        document = hjson.load(sys.stdin)
+        document["key"]
+        document["watch"]
     except hjson.scanner.HjsonDecodeError as e:
         logging.error("Invalid syntax in stdin: %s", e)
         return 1
+    except KeyError:
+        logging.error('No "key" or "watch" cell in stdin.')
+        return 1
 
-    listings = currencies(key)
+    listings = currencies(document["key"])
     if not listings:
         return 2
 
+    watching = document["watch"]
     functions = [None] * len(watching)
     for i, w in enumerate(watching):
         functions[i] = cmp_function(w["when"])

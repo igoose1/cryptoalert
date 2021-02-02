@@ -1,13 +1,14 @@
 Alert when cryptocurrencies become more or less expensive.
 
-Uses quotes from coinmarketcap.com.
+Powered by coinmarketcap.com. Get its API key before executing a script.
 
 Example
 =======
 
 sample.hjson file is
 
-	[
+	key: 1234-5678
+	watch: [
 		{
 			symbol: ETH
 			when: >2000
@@ -38,7 +39,7 @@ sample.hjson file is
 
 Launch script like this
 
-	key="1234-5678-..." python cryptoalert < sample.hjson
+	python cryptoalert < sample.hjson
 
 Possible output is
 
