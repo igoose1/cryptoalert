@@ -45,5 +45,5 @@ Possible output is
 	BTC costs more than it was expected. Its current price is 33444.1234 USD.
 	ZEC costs more than it was expected. Its current price is 85.1267 USD.
 
-Nothing is being said about ETH and USDT as their price is not in specified
+Nothing is being said about ETH and USDT as their prices are not in specified
 limits. Nothing can be printed as well.
