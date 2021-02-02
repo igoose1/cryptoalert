@@ -38,7 +38,7 @@ sample.hjson file is
 
 Launch script like this
 
-	key="1234-5678-..." python echo.py < sample.hjson
+	key="1234-5678-..." python cryptoalert < sample.hjson
 
 Possible output is
 
