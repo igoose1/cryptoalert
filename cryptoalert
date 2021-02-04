@@ -96,6 +96,7 @@ def main():
     for i, w in enumerate(watching):
         functions[i] = cmp_function(w["when"])
 
+    output = set()
     for currency in listings:
         for i in range(len(watching)):
             if watching[i]["symbol"] != currency["symbol"]:
@@ -112,7 +113,10 @@ def main():
                 to_echo = s.format(
                     symbol=currency["symbol"], price=currency["quote"]["USD"]["price"]
                 )
-                print(to_echo)
+                output.add(to_echo)
+
+    for line in output:
+        print(line)
 
 
 if __name__ == "__main__":
