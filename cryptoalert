@@ -16,6 +16,7 @@
 
 import logging
 import sys
+from typing import List
 
 import hjson
 import requests
@@ -39,14 +40,13 @@ WHEN_TRANSLATER = {
 }
 
 
-def currencies(key: str):
+def currencies(key: str, symbols: List[str]):
     headers = {"Accepts": "application/json", "X-CMC_PRO_API_KEY": key}
-    session = requests.Session()
-    session.headers.update(headers)
+    params = {"symbol": ",".join(symbols)}
 
-    url = BASE_URL.format("cryptocurrency/listings/latest?limit=5000")
+    url = BASE_URL.format("cryptocurrency/quotes/latest")
     try:
-        response = session.get(url)
+        response = requests.get(url, params=params, headers=headers)
         j = response.json()
         if "data" not in j:
             logging.error(
@@ -87,8 +87,12 @@ def main():
         logging.error('No "key" or "watch" cell in stdin.')
         return 1
 
-    listings = currencies(document["key"])
-    if not listings:
+    asked = set()
+    for el in document["watch"]:
+        asked.add(el["symbol"])
+
+    quotes = currencies(document["key"], list(asked))
+    if not quotes:
         return 2
 
     watching = document["watch"]
@@ -97,7 +101,7 @@ def main():
         functions[i] = cmp_function(w["when"])
 
     output = set()
-    for currency in listings:
+    for currency in quotes.values():
         for i in range(len(watching)):
             if watching[i]["symbol"] != currency["symbol"]:
                 continue
