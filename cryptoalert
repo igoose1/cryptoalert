@@ -16,7 +16,7 @@
 
 import logging
 import sys
-from typing import List
+from typing import List, Optional
 
 import hjson
 import requests
@@ -28,7 +28,7 @@ BASE_URL = "https://pro-api.coinmarketcap.com/v1/{}"
 """
 Every element must be the same structure:
 
-    sign_of_when_cell: (
+    "sign_of_when_cell": (
         "the string used in \"currency costs {} it was expected\"",
         lambda asked, from_cap: whether_approaches(asked, from_cap)),
     )
@@ -59,7 +59,7 @@ def currencies(key: str, symbols: List[str]):
         return {}
 
 
-def cmp_function(s: str):
+def cmp_function(s: str, msg: Optional[str] = None):
     try:
         than_what = float(s[1:])
         then_what, then_how = WHEN_TRANSLATER[s[0]]
@@ -68,6 +68,8 @@ def cmp_function(s: str):
             + then_what
             + " it was expected. Its current price is {price:.4f} USD."
         )
+        if msg:
+            then_what += f" Message: {msg}"
         f = lambda from_cap: then_what if then_how(than_what, from_cap) else None
         return f
     except (IndexError, ValueError, KeyError):
@@ -98,7 +100,7 @@ def main():
     watching = document["watch"]
     functions = [None] * len(watching)
     for i, w in enumerate(watching):
-        functions[i] = cmp_function(w["when"])
+        functions[i] = cmp_function(w["when"], w.get("msg"))
 
     output = set()
     for currency in quotes.values():
